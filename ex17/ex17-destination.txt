@@ -1,0 +1,3 @@
+This is the start file. This is not meant to be anything other than some basic text.
+This will be copied into a new file.
+This is the starter file but the text will appear in the destinationf file.
