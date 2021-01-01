@@ -17,7 +17,7 @@ def divide(a, b):
     return a / b
 
 def bruteForcePrimeCheck(a):
-    if a % 2 == 0:
+    if (a % 2 == 0 and a != 2) or a == 0 or a == 1:
         return False
     
     check_num = 3
