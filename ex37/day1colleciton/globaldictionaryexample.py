@@ -1,11 +1,12 @@
 # Code to use as many Python keywords and contructs.
 
 cube = lambda x: x ** 3
+user_name = ""
 
 def getUserValues():
-    global name
+    global user_name
     print(f"Greetings\n.Please enter your name at the cursor below.")
-    name = input("\\> ")
+    user_name = input("\\> ")
 
 def run_code():
     code = input("Enter in a simple print command or other Python code: ")
