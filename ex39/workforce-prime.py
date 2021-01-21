@@ -23,7 +23,11 @@ class Person:
         return f"{self.last_name}, {self.first_name} ({self.id})"
 
 class ManagerAssignment:
-    pass
+    def __init__(self, manager_id, worker_id, relationship_notes):
+        super().__init__()
+        self.worker = worker_id
+        self.manager = manager_id
+        self.notes = relationship_notes
 
 
 def clear_screen():
@@ -100,10 +104,38 @@ def search():
 
 
 def printout():
-    pass
+    for manager_id, worker_assignments in list(manager_assignments.items()):
+        manager = persons.get(manager_id)
+        print(f"Manager: {manager.get_short_description()}")
+        for assignment in worker_assignments:
+            worker = persons.get(assignment.worker)
+            print(f"\tWorker: {worker.get_short_description()}")
 
 def assign():
-    pass
+    print_header("Assign to Manager")
+    manager_id = int(input("Enter the manager ID: "))
+    if persons.get(manager_id) == None:
+        print("Manager with that id is not found.")
+        return
+    
+    worker_id = int(input("Enter the employee's ID: "))
+    if persons.get(worker_id) == None:
+        print("Manager with that id is not found.")
+        return
+    
+    notes = input("Provide any notes: ")
+
+    entry = ManagerAssignment(manager_id, worker_id, notes)
+    
+    if manager_assignments.get(manager_id) == None:
+        manager_assignments[manager_id] = []
+    
+    worker_listing = manager_assignments.get(manager_id)
+    worker_listing.append(entry)
+    manager_assignments[manager_id] = worker_listing
+    print("Successfully updating listing.")
+    wait_enter()
+    menu_display()
 
 # Start Here
 menu_display()
