@@ -31,27 +31,32 @@ class ManagerAssignment:
 
 
 def clear_screen():
+    """Clears the terminal screen of content"""
     if name == 'nt':
         _ = system('cls')
     else:
         _ = system('clear')
 
 def wait_enter():
+    """Waits for the user to hit enter before continuing."""
     print("")
     val = input("Press ENTER to continue.")
 
 def menu_display():
+    """Initial state of the application. Provides menu options."""
     clear_screen()
+    print("")
     print("What would you like to do?")
     print("1. Add New Team Member")
     print("2. Assign Individual to Manager")
     print("3. Search for an Individual")
     print("4. Management Printout")
+    print("5. Management Writeout")
     print("")
     print("0. Exit")
     choice = "X"
 
-    while choice not in ("1234"):
+    while choice not in ("12345"):
         choice = input("Selection: ")
     
     if choice == "1":
@@ -62,18 +67,22 @@ def menu_display():
         search()
     elif choice == "4":
         printout()
+    elif choice == "5":
+        writeout("managers.txt")
     elif choice == "0":
         exit(0)
     else:
         print("Unknown error occurred!")
 
 def print_header(header_text):
+    """Outputs a header, formatted."""
     print("")
     print('*' * len(header_text))
     print(header_text)
     print('-' * len(header_text))
 
 def add_member():
+    """Adds an employee to the internal collection"""
     global person_id_index 
     global persons
     print_header("Add New Person")
@@ -89,6 +98,7 @@ def add_member():
     menu_display()
 
 def search():
+    """Searches for an individual based on a supplied ID"""
     global persons
     print_header("Search")
     search_id = int(input("Enter the ID: "))
@@ -102,6 +112,21 @@ def search():
     wait_enter()
     menu_display()
 
+def writeout(filename):
+    """Outputs the managerial information and hierarchy into a file"""
+    f = open(filename, 'w')
+    for manager_id, worker_assignments in list(manager_assignments.items()):
+        manager = persons.get(manager_id)
+        f.write(f"Manager: {manager.get_short_description()}")
+        for assignment in worker_assignments:
+            worker = persons.get(assignment.worker)
+            f.write(f"\n\tWorker: {worker.get_short_description()}")
+        print("\n")
+    f.close()
+
+    print(f"Successfully wrote to the file {filename}")
+    wait_enter()
+    menu_display()
 
 def printout():
     for manager_id, worker_assignments in list(manager_assignments.items()):
@@ -110,6 +135,9 @@ def printout():
         for assignment in worker_assignments:
             worker = persons.get(assignment.worker)
             print(f"\tWorker: {worker.get_short_description()}")
+
+    wait_enter()
+    menu_display()
 
 def assign():
     print_header("Assign to Manager")
