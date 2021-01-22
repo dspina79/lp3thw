@@ -8,9 +8,9 @@ persons = {}
 manager_assignments = {}
 
 class Person:    
-    def __init__(self, first, last, title, id):
-        self.first_name = first
-        self.last_name = last
+    def __init__(self, fname, lname, title, id):
+        self.first_name = fname
+        self.last_name = lname
         self.position = title
         self.id = id
 
@@ -43,8 +43,11 @@ def wait_enter():
     val = input("Press ENTER to continue.")
 
 def menu_display():
+    global persons
     """Initial state of the application. Provides menu options."""
-    clear_screen()
+    print_header("--- WORKER MANAGEMENT MAIN MENU ---")
+    print("")
+    print(f"There are currently {len(persons)} workers in the system.")
     print("")
     print("What would you like to do?")
     print("1. Add New Team Member")
@@ -54,9 +57,10 @@ def menu_display():
     print("5. Management Writeout")
     print("")
     print("0. Exit")
+    print("")
     choice = "X"
 
-    while choice not in ("12345"):
+    while choice not in ("123450"):
         choice = input("Selection: ")
     
     if choice == "1":
@@ -76,7 +80,7 @@ def menu_display():
 
 def print_header(header_text):
     """Outputs a header, formatted."""
-    print("")
+    clear_screen()
     print('*' * len(header_text))
     print(header_text)
     print('-' * len(header_text))
@@ -129,6 +133,7 @@ def writeout(filename):
     menu_display()
 
 def printout():
+    """Displays the manager and worker roster"""
     for manager_id, worker_assignments in list(manager_assignments.items()):
         manager = persons.get(manager_id)
         print(f"Manager: {manager.get_short_description()}")
