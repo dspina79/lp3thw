@@ -2,27 +2,26 @@ from os import system, name
 import time
 
 class LineAnimationEngine(object):
+    def print_frame(self, interval, shift, frame_rate):
+        spacing = " " * interval
+        print(f"{spacing}*")
+        interval += shift
+        time.sleep(frame_rate)
+        self.clear_screen()
+        return interval
 
-    def generateOscilation(self, max_width):
+    def generateOscilation(self, max_width, frames_per_second):
         interval = 0
         forward = True
-        frames_sec = 1.000 / 60.000
+        frame_rate = 1.000 / float(frames_per_second)
         while True:
             if forward:
                 while interval < max_width:
-                    spacing = " " * interval
-                    print(f"{spacing}*")
-                    interval += 1
-                    time.sleep(frames_sec)
-                    self.clear_screen()
+                    interval = self.print_frame(interval, 1, frame_rate)
                 forward = False
             if not forward:
                 while interval > 0:
-                    spacing = " " * interval
-                    print(f"{spacing}*")
-                    interval -= 1
-                    time.sleep(frames_sec)
-                    self.clear_screen()
+                    interval = self.print_frame(interval, -1, frame_rate)
                 forward = True
         
     def clear_screen(self):
@@ -32,6 +31,8 @@ class LineAnimationEngine(object):
         else:
             _ = system('clear')
 
+def main():
+    eng = LineAnimationEngine()
+    eng.generateOscilation(30, 60)
 
-eng = LineAnimationEngine()
-eng.generateOscilation(30)
+main()
