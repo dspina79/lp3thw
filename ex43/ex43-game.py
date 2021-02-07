@@ -41,7 +41,31 @@ class LaserWeaponsArmory(Scene):
 
 class TheBridge(Scene):
     def enter(self):
-        pass
+        print("""
+            You enter the bridge. 
+            The view screen is dark and cracked. You hear the scratching of the monster in the ready room.
+            Command is uncreachable.
+            The dead crew lay fallen at their stations. One crew member, the Android known as Kevin, has a sheet of paper in his hands.
+            The paper reads 00101 01010 11111 00001. It looks like he was attempting to enter a 6-digit code into the ship's control
+            before succumbing to his wounds.
+            You think that the code is key to getting out.
+        """)
+
+        key_code = input("Input in the 6-digit code: ")
+        check_code(key_code)
+
+    def check_code(self, code):
+        if code == "510311":
+            # you got through it.
+            print(""" 
+                The door to the escape pod room opens.
+                The computer chimes. 'Command code accepted. Self destruct in 30 seconds.'
+                You better get a move on!
+                """)
+        else: 
+            print("The bridge is illuminated with red lights. The computer says, 'Code not accepted. Self destruct initiating.'")
+            Death("You explode wtith the rest of the ship.").enter()
+
 
 class EscapePod(Scene):
     def __init__(self):
