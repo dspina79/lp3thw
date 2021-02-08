@@ -10,12 +10,12 @@ class Scene(object):
 
 class Engine(object):
     def  __init__(self, scene_map):
-        self.game_map = map
+        self.game_map = scene_map
     
     def play(self):
         while True:
             self.game_map.opening_scene().enter()
-            self.next_scene('')
+            self.game_map.next_scene('')
 
 class Death(Scene):
     def __init__(self):
@@ -33,11 +33,39 @@ class Death(Scene):
 
 class CentralCorridor(Scene):
     def enter(self):
-        pass
+        print("""
+            You awaken in the central corridor of the SS Goliath. Last you remember, something horrible broke out of its ice shell.
+            Why did those scientists bring that commet fragment onboard? Why weren't more labs done?
+            BANG!
+            Your hear the monster howling and clawing at doors along the corridor. You need to get to the laster weapons armory
+            but the labels on the doors are scatched off. Which door do you pick: left or right?
+            """)
+
+        door_choice = input("Door choice: ")
+        if door_choice.lower() == "right":
+            print("It looks liek the laser weapons armory inside!")
+        else:
+            print("The door opens and the monster stares at you. It raises it's claw-laden hand.")
+            Death("You get your face clawed off").enter()
+
 
 class LaserWeaponsArmory(Scene):
     def enter(self):
-        pass
+        print("""
+            The laser room is dark but at least some of the weapons are active. Unfortunately, it's only the weapons between
+            this room and the next room, holding the monster. You can try for the door, enter command 1, or command 2.
+            """)
+        laser_choice = input("What is your choice? [door, 1, or 2]")
+
+        if laser_choice.lower() == "door":
+            print("The door opens but the monster escapes from the side door. It attacks you from behind.")
+            Death("Your body is ripped apart.").enter()
+        elif laser_choice == "2":
+            print("You start internal laser system. It fires at everything in the room, including you.")
+            Death("You're obliterated by your own ship's weapons.").enter()
+        else:
+            print("The lasers open fire in the next room. The monster screams and runs away wounded.")
+            print("You're able to escape through the door.")
 
 class TheBridge(Scene):
     def enter(self):
@@ -52,7 +80,7 @@ class TheBridge(Scene):
         """)
 
         key_code = input("Input in the 6-digit code: ")
-        check_code(key_code)
+        self.check_code(key_code)
 
     def check_code(self, code):
         if code == "510311":
@@ -69,8 +97,8 @@ class TheBridge(Scene):
 
 class EscapePod(Scene):
     def __init__(self):
-        num_pods = 3
-        correct_pod = randint(1, num_pods)
+        self.num_pods = 3
+        self.correct_pod = randint(1, self.num_pods)
 
     def enter(self):
         print(f"""
@@ -80,7 +108,7 @@ class EscapePod(Scene):
             It's time to choose. Pods 1 through {self.num_pods}       
             """)
         pod_choice = int(input("What pod do you choose? "))
-        check_pod(pod_choice)
+        self.check_pod(pod_choice)
 
     def check_pod(self, choice):
         if choice == self.correct_pod:
@@ -101,7 +129,6 @@ class EscapePod(Scene):
 
 
 class Map(object):
-
     scenes = ['CentralCorridor', 'LaserWeaponsArmory', 'Bridge', 'EscapePod', 'Death']
     current_scene_index = 0
     def __init__(self, start_scene):
@@ -114,7 +141,7 @@ class Map(object):
             self.current_scene_index += 1
 
     def opening_scene(self):
-        return get_scene(self.scenes[self.current_scene_index])
+        return self.get_scene(self.scenes[self.current_scene_index])
 
     def get_scene(self, scene_name):
         if scene_name == 'CentralCorridor':
@@ -129,7 +156,7 @@ class Map(object):
             return Death('You didn\'t make it. You died.')
 
 def main():
-    a_map = Map('central_corridor')
+    a_map = Map('CentralCorridor')
     a_game = Engine(a_map)
     a_game.play()
 
