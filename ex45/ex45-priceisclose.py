@@ -26,12 +26,19 @@ class Player(Person):
     def __init__(self, name):
         super().__init__(name)
         self.points = 0
+        self.knowledge = randint(5, 100)
+        self.current_guess = 0
 
     def win(self):
         self.points += 1
     
     def lose(self):
         self.points += 1
+
+    def guess_price(self, item):
+        base_guess = int(float(item.get_price()) * (float(self.knowledge) / 100.00))
+        self.current_guess = base_guess + randint(-5, 5)
+        return self.current_guess
 
 class ItemRack(object):
     def __init__(self):
@@ -59,6 +66,39 @@ class ItemRack(object):
             return None
 
 class Engine(object):
+    def __init__(self, item_rack, main_player, comp_players, game):
+        super().__init__()
+        self.item_rack = item_rack
+        self.main = main_player
+        self.other_players = comp_players
+    
+    def run(self):
+        item = self.item_rack.get_item()
+        while item != None:
+            pass
+
+class GameScene(object):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+    
+    def welcome(self):
+        print(f"Welcome to {name}")
+
+class GamePlayInstance(GameScene):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def play(self, item, main_player, other_players):
+        print(f"The current item is {item.name}")
+
+        for other in other_players:
+            print(f"{other.name} guesses ${other.guess_price}.")
+        
+        player_guess = input(input("What is your guess? "))
+        # TODO: Complete
+
+class GameEnd(GameScene):
     pass
 
 class Game(object):
