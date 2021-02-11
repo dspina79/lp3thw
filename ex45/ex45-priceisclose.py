@@ -99,7 +99,24 @@ class GamePlayInstance(GameScene):
         # TODO: Complete
 
 class GameEnd(GameScene):
-    pass
+    def __init__(self, name):
+        super().__init__(name)
+
+    def results(self, main_player, other_players):
+        self.welcome()
+        print("The game is over. Here are the results:")
+        top_player = None
+        for other in other_players:
+            print(f"{other.name}:\t\t{other.points}")
+            if top_player == None or other.points > top_player:
+                top_player = other
+        
+        print(f"Your score:\t\t\{main_player.points}")
+        if main_player.points >= top_player.points:
+            print("YOU WIN!!! Congratulations on a job well done!")
+        else:
+            print(f"{top_player.name} won. Please try again later.")
+
 
 class Game(object):
     pass
