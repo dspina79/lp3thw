@@ -22,6 +22,23 @@ class Host(Person):
     def __init__(self, name):
         super().__init__(name)
 
+    def intro(self, other_players, main_player):
+        print(f"Welcome to the 'Price is Close'. I'm your host, {self.name}")
+        print("Today we have four great contestants.")
+        for other in other_players:
+            print(f"{other.name}")
+        print(f"And a fan favorite, {main_player.name}")
+
+        print("Let's get the game started.")
+
+    def present_item(self, item, item_index):
+        intro_text = "Next up" 
+        if item_index == 1:
+            intro_text = "First up"
+
+        print(f"{intro_text}, we have a lovely {item.name}. Let's get bidding.")
+
+
 class Player(Person):
     def __init__(self, name):
         super().__init__(name)
@@ -119,5 +136,16 @@ class GameEnd(GameScene):
 
 
 class Game(object):
-    pass
-        
+    def __init__(self):
+        super().__init__()
+        host = Host("Wink Winkelman")
+        other_players = [Player("Norm"), Player("Sheryl"), Player("Monique")]
+
+    def start(self):
+        this_player_name = input("What is your name? ")
+        self.main_player = Player(this_player_name)
+        self.host.intro(self.other_players, self.main_player)
+        self.item_rack = ItemRack()
+        self.item_rack.load_items()
+        self.engine = Engine(self.item_rack, self.main_player, self.other_players, self)
+    
