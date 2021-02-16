@@ -62,24 +62,23 @@ class ItemRack(object):
         self.items = []
         
     def load_items(self):
-        self.items.appen(Item("Ceiling Fan", 200))
-        self.items.appen(Item("Sedan", 30000))
-        self.items.appen(Item("Rice-a-Roni 5 Pack", 10))
-        self.items.appen(Item("Cuisanart", 49))
-        self.items.appen(Item("Instapot", 80))
-        self.items.appen(Item("Encyclopedia Britanica", 1000))
-        self.items.appen(Item("Tent for 2", 100))
-        self.items.appen(Item("Stereo", 400))
-        self.items.appen(Item("Push Lawnmower", 399))
+        self.items.append(Item("Ceiling Fan", 200))
+        self.items.append(Item("Sedan", 30000))
+        self.items.append(Item("Rice-a-Roni 5 Pack", 10))
+        self.items.append(Item("Cuisanart", 49))
+        self.items.append(Item("Instapot", 80))
+        self.items.append(Item("Encyclopedia Britanica", 1000))
+        self.items.append(Item("Tent for 2", 100))
+        self.items.append(Item("Stereo", 400))
+        self.items.append(Item("Push Lawnmower", 399))
 
     def get_item(self):
-        if items.count > 0:
-            item_index = randint(0, items.count)
-            item = self.items[item_index]
-            self.items.remove(item)
+        if len(self.items)> 0:
+            item = self.items.pop()
             return item
         else:
             print("No more items.")
+            GameEnd("Closing").results()
             return None
 
 class Engine(object):
@@ -88,11 +87,24 @@ class Engine(object):
         self.item_rack = item_rack
         self.main = main_player
         self.other_players = comp_players
+        self.game = game
     
     def run(self):
         item = self.item_rack.get_item()
+        startingScene = GameScene("The Price is Close")
+        startingScene.welcome()
         while item != None:
-            pass
+            instance = GamePlayInstance(item.name)
+            instance.play(item, self.main, self.other_players, self.game.host)
+
+class GuessPrice(object):
+    def __init__(self, item, player, guess):
+        self.player = player
+        self.guess = guess
+        self.item = item
+    
+    def difference(self):
+        return self.item.get_price() - self.guess
 
 class GameScene(object):
     def __init__(self, name):
@@ -100,20 +112,48 @@ class GameScene(object):
         self.name = name
     
     def welcome(self):
-        print(f"Welcome to {name}")
+        print(f"Welcome to {self.name}")
 
 class GamePlayInstance(GameScene):
     def __init__(self, name):
         super().__init__(name)
 
-    def play(self, item, main_player, other_players):
+    def play(self, item, main_player, other_players, host):
         print(f"The current item is {item.name}")
+        guesses = []
 
         for other in other_players:
-            print(f"{other.name} guesses ${other.guess_price}.")
+            guess_price = other.guess_price(item)
+            guess = GuessPrice(item, other, guess_price)
+            print(f"{other.name} guesses ${guess_price}.")
+            guesses.append(guess)
+
         
-        player_guess = input(input("What is your guess? "))
-        # TODO: Complete
+        player_guess = int(input("What is your guess? "))
+        my_guess = GuessPrice(item, main_player, player_guess)
+        guesses.append(my_guess)
+
+        the_winner = self.get_winner(guesses)
+        # print out simulating the host
+        print(f"{host.name}: The actual price is ${item.get_price()}")
+        
+        if the_winner != None:
+            print(f"{host.name}: The winner is: {the_winner.name}")
+        else:
+            print(f"{host.name}: Sorry, there were no winners. You all suck.")
+
+    def get_winner(self, price_guesses):
+        player_win = None
+        top_difference = 100000000
+        for price_guess in price_guesses:
+            if price_guess.difference() > 0 and price_guess.difference() <= top_difference:
+                top_difference = price_guess.difference()
+                player_win = price_guess.player
+                player_win.win()
+            else:
+                price_guess.player.lose()
+         
+        return player_win
 
 class GameEnd(GameScene):
     def __init__(self, name):
@@ -138,8 +178,8 @@ class GameEnd(GameScene):
 class Game(object):
     def __init__(self):
         super().__init__()
-        host = Host("Wink Winkelman")
-        other_players = [Player("Norm"), Player("Sheryl"), Player("Monique")]
+        self.host = Host("Wink Winkelman")
+        self.other_players = [Player("Norm"), Player("Sheryl"), Player("Monique")]
 
     def start(self):
         this_player_name = input("What is your name? ")
@@ -148,4 +188,14 @@ class Game(object):
         self.item_rack = ItemRack()
         self.item_rack.load_items()
         self.engine = Engine(self.item_rack, self.main_player, self.other_players, self)
+        self.engine.run()
+
+
+def main():
+    game = Game()
+    game.start()
+
+main()
+
+
     
