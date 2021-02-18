@@ -29,14 +29,14 @@ class Host(Person):
             print(f"{other.name}")
         print(f"And a fan favorite, {main_player.name}")
 
-        print("Let's get the game started.")
+        print("\nLet's get the game started.\n\n")
 
     def present_item(self, item, item_index):
         intro_text = "Next up" 
         if item_index == 1:
             intro_text = "First up"
 
-        print(f"{intro_text}, we have a lovely {item.name}. Let's get bidding.")
+        print(f"\n{intro_text}, we have a lovely {item.name}. Let's get bidding.")
 
 
 class Player(Person):
@@ -135,10 +135,10 @@ class GamePlayInstance(GameScene):
 
         the_winner = self.get_winner(guesses)
         # print out simulating the host
-        print(f"{host.name}: The actual price is ${item.get_price()}")
+        print(f"{host.name}: ....\nThe actual price is ${item.get_price()}")
         
         if the_winner != None:
-            print(f"{host.name}: The winner is: {the_winner.name}")
+            print(f"{host.name}: \nThe winner is: {the_winner.name}")
         else:
             print(f"{host.name}: Sorry, there were no winners. You all suck.")
 
@@ -161,18 +161,18 @@ class GameEnd(GameScene):
 
     def results(self, main_player, other_players):
         self.welcome()
-        print("The game is over. Here are the results:")
+        print("\nThe game is over. Here are the results:")
         top_player = None
         for other in other_players:
             print(f"{other.name}:\t\t{other.points}")
             if top_player == None or other.points > top_player:
                 top_player = other
         
-        print(f"Your score:\t\t\{main_player.points}")
+        print(f"\nYour score:\t\t\{main_player.points}")
         if main_player.points >= top_player.points:
-            print("YOU WIN!!! Congratulations on a job well done!")
+            print("\nYOU WIN!!! Congratulations on a job well done!")
         else:
-            print(f"{top_player.name} won. Please try again later.")
+            print(f"\n\n{top_player.name} won. Please try again later.")
 
 
 class Game(object):
