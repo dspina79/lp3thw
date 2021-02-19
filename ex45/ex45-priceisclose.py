@@ -77,8 +77,6 @@ class ItemRack(object):
             item = self.items.pop()
             return item
         else:
-            print("No more items.")
-            GameEnd("Closing").results()
             return None
 
 class Engine(object):
@@ -96,6 +94,10 @@ class Engine(object):
         while item != None:
             instance = GamePlayInstance(item.name)
             instance.play(item, self.main, self.other_players, self.game.host)
+            item = self.item_rack.get_item()
+        #end of game
+        print("Announcer: And there are no more items.")
+        GameEnd("Closing").results(self.main, self.other_players)
 
 class GuessPrice(object):
     def __init__(self, item, player, guess):
@@ -135,12 +137,12 @@ class GamePlayInstance(GameScene):
 
         the_winner = self.get_winner(guesses)
         # print out simulating the host
-        print(f"{host.name}: ....\nThe actual price is ${item.get_price()}")
+        print(f"{host.name}: ....\n\nThe actual price is ${item.get_price()}")
         
         if the_winner != None:
-            print(f"{host.name}: \nThe winner is: {the_winner.name}")
+            print(f"{host.name}: \nThe winner is: {the_winner.name}\n\n")
         else:
-            print(f"{host.name}: Sorry, there were no winners. You all suck.")
+            print(f"{host.name}: Sorry, there were no winners. You all suck.\n\n")
 
     def get_winner(self, price_guesses):
         player_win = None
@@ -160,15 +162,14 @@ class GameEnd(GameScene):
         super().__init__(name)
 
     def results(self, main_player, other_players):
-        self.welcome()
         print("\nThe game is over. Here are the results:")
         top_player = None
         for other in other_players:
             print(f"{other.name}:\t\t{other.points}")
-            if top_player == None or other.points > top_player:
+            if top_player == None or other.points > top_player.points:
                 top_player = other
         
-        print(f"\nYour score:\t\t\{main_player.points}")
+        print(f"\nYour score:\t\t{main_player.points}")
         if main_player.points >= top_player.points:
             print("\nYOU WIN!!! Congratulations on a job well done!")
         else:
